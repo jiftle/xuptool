@@ -8,7 +8,7 @@ import (
 var w fyne.Window
 
 func MainUI(a fyne.App) {
-	w = a.NewWindow("算法工具 algorithm tool by jiftle 2022")
+	w = a.NewWindow("算法工具 --by jiftle 2022")
 
 	tabs := container.NewAppTabs(
 		container.NewTabItem("SM4", NewGUI_SM4().MakeUI()),
@@ -19,6 +19,7 @@ func MainUI(a fyne.App) {
 	w.SetContent(tabs)
 
 	w.Resize(fyne.NewSize(600, 400))
+	w.SetFixedSize(true)
 	w.CenterOnScreen()
 	w.ShowAndRun()
 }

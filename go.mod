@@ -4,8 +4,10 @@ go 1.17
 
 require (
 	fyne.io/fyne/v2 v2.1.4
-	gitee.com/yctxkj/xcrypto v0.0.0-20220325165647-f0d262dcde52
+	gitee.com/yctxkj/xcrypto v0.0.0-00010101000000-000000000000
 )
+
+replace gitee.com/yctxkj/xcrypto v0.0.0-00010101000000-000000000000 => ../xcrypto
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect

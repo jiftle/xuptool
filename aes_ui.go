@@ -57,7 +57,6 @@ func (g *aes_gui) MakeUI() fyne.CanvasObject {
 			g.txtResult.SetText("")
 			g.txtResult.Refresh()
 			sPlain := g.txtPlain.Text
-			//dialog.NewInformation("tip", fmt.Sprintf("plain: %v", sPlain), w).Show()
 			bytPlain, err := hex.DecodeString(sPlain)
 			if err != nil {
 				dialog.NewError(err, w).Show()
@@ -81,7 +80,6 @@ func (g *aes_gui) MakeUI() fyne.CanvasObject {
 			// 解密
 			g.txtResult.SetText("")
 			sPlain := g.txtPlain.Text
-			//dialog.NewInformation("tip", fmt.Sprintf("plain: %v", sPlain), w).Show()
 			bytPlain, err := hex.DecodeString(sPlain)
 			if err != nil {
 				dialog.NewError(err, w).Show()
@@ -102,9 +100,6 @@ func (g *aes_gui) MakeUI() fyne.CanvasObject {
 		}),
 		widget.NewButtonWithIcon("reset", theme.DeleteIcon(), func() {
 			g.txtResult.SetText("")
-		}),
-		widget.NewButtonWithIcon("exit", theme.DeleteIcon(), func() {
-			w.Close()
 		}),
 	)
 }
