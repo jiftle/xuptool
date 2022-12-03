@@ -9,7 +9,11 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
+<<<<<<< HEAD
             "program": "${workspaceFolder}"
+=======
+            "program": "${fileDirname}"
+>>>>>>> origin/dev
         }
     ]
 }
