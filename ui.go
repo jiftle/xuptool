@@ -13,12 +13,13 @@ func MainUI(a fyne.App) {
 	tabs := container.NewAppTabs(
 		container.NewTabItem("SM4", NewGUI_SM4().MakeUI()),
 		container.NewTabItem("AES", NewGUI_AES().MakeUI()),
+		container.NewTabItem("DES", NewGUI_DES().MakeUI(a)),
 	)
 	tabs.SetTabLocation(container.TabLocationLeading)
 
 	w.SetContent(tabs)
 
-	w.Resize(fyne.NewSize(600, 400))
+	w.Resize(fyne.NewSize(800, 600))
 	w.SetFixedSize(true)
 	w.CenterOnScreen()
 	w.ShowAndRun()
