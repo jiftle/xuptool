@@ -1,4 +1,4 @@
-package main
+package ui
 
 import (
 	"encoding/hex"
@@ -23,7 +23,7 @@ func NewGUI_AES() *aes_gui {
 	return &aes_gui{}
 }
 
-func (g *aes_gui) MakeUI() fyne.CanvasObject {
+func (g *aes_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 	g.lblPlain = widget.NewLabel("plain")
 	g.txtResult = &widget.Entry{Text: "", PlaceHolder: "this is result ! "}
 	g.txtPlain = &widget.Entry{Text: "11223344556677881122334455667788", PlaceHolder: "please intput plain ..."}

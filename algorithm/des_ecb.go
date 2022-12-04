@@ -48,6 +48,40 @@ func DES_ECB_Encrypt(key, plain string) (cipher string, err error) {
 	return
 }
 
+func TripleDES_ECB_Decrypt(key, plain string) (cipher string, err error) {
+	bytKey, err := hex.DecodeString(key)
+	if err != nil {
+		return
+	}
+	bytPlain, err := hex.DecodeString(plain)
+	if err != nil {
+		return
+	}
+	bytCipher, err := TripleDESECB(bytKey, bytPlain, 0)
+	if err != nil {
+		return
+	}
+	cipher = hex.EncodeToString(bytCipher)
+	return
+}
+
+func TripleDES_ECB_Encrypt(key, plain string) (cipher string, err error) {
+	bytKey, err := hex.DecodeString(key)
+	if err != nil {
+		return
+	}
+	bytPlain, err := hex.DecodeString(plain)
+	if err != nil {
+		return
+	}
+	bytCipher, err := TripleDESECB(bytKey, bytPlain, 1)
+	if err != nil {
+		return
+	}
+	cipher = hex.EncodeToString(bytCipher)
+	return
+}
+
 // DESECB single des for ecb mode
 // flag	0：解密，1：加密
 func DESECB(keyValue []byte, txtValue []byte, flag int) ([]byte, error) {

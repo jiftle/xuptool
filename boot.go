@@ -9,10 +9,6 @@ import (
 )
 
 func init() {
-	if runtime.GOOS == "windows" {
-
-	}
-
 	switch runtime.GOOS {
 	case "windows":
 		setFont_Win()
@@ -29,7 +25,7 @@ func setFont_linux() {
 }
 
 func setFont_Win() {
-	os.Setenv("FYNE_THEME", "light")
+	os.Setenv("FYNE_THEME", "dark")
 
 	fontPaths := findfont.List()
 	for _, path := range fontPaths {

@@ -1,4 +1,4 @@
-package main
+package ui
 
 import (
 	"encoding/hex"
@@ -11,27 +11,39 @@ import (
 	"gitee.com/yctxkj/xuptool/algorithm"
 )
 
-type des_gui struct {
+type tripledes_gui struct {
 	app fyne.App
 
-	rdoGroup  *widget.RadioGroup
-	lblPlain  *widget.Label
-	txtPlain  *widget.Entry
-	txtKey    *widget.Entry
-	txtResult *widget.Entry
+	rdoGroup        *widget.RadioGroup
+	lblPadding      *widget.Label
+	rdoGroupPadding *widget.RadioGroup // 补齐规则
+	lblPlain        *widget.Label
+	txtPlain        *widget.Entry
+	txtKey          *widget.Entry
+	txtResult       *widget.Entry
 
-	mode string // 算法模式 ECB CBC
+	mode    string // 算法模式 ECB CBC
+	padding string // 补齐规则
 }
 
-func NewGUI_DES() *des_gui {
-	return &des_gui{}
+func New_tripledes_gui() XuptoolUI {
+	return &tripledes_gui{}
 }
 
-func (g *des_gui) MakeUI(app fyne.App) fyne.CanvasObject {
+func (g *tripledes_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 	g.lblPlain = widget.NewLabel("明文")
 	g.txtResult = &widget.Entry{Text: "", PlaceHolder: "this is result ! "}
 	g.txtPlain = &widget.Entry{Text: "1111111111111111", PlaceHolder: "please intput plain ..."}
 	g.txtKey = &widget.Entry{Text: "1111111111111111", PlaceHolder: "please input key ..."}
+	g.rdoGroup = widget.NewRadioGroup([]string{"ECB", "CBC"}, func(s string) {
+		g.mode = s
+	})
+	g.rdoGroup.Horizontal = true
+	g.lblPadding = widget.NewLabel("补齐规则")
+	g.rdoGroupPadding = widget.NewRadioGroup([]string{"PBOC", "PKCS5"}, func(s string) {
+		g.padding = s
+	})
+	g.rdoGroupPadding.Horizontal = true
 
 	g.txtPlain.OnChanged = func(s string) {
 		g.lblPlain.SetText(fmt.Sprintf("明文[%v]", len(s)))
@@ -49,12 +61,12 @@ func (g *des_gui) MakeUI(app fyne.App) fyne.CanvasObject {
 		}
 		return nil
 	}
-	g.rdoGroup = widget.NewRadioGroup([]string{"ECB", "CBC"}, func(s string) {
-		g.mode = s
-	})
+
 	cobj := container.NewVBox(
 		widget.NewLabel("算法模式"),
 		g.rdoGroup,
+		g.lblPadding,
+		g.rdoGroupPadding,
 		g.lblPlain,
 		g.txtPlain,
 		widget.NewLabel("密钥"),
