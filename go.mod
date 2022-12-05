@@ -8,7 +8,7 @@ require (
 	github.com/flopp/go-findfont v0.1.0
 )
 
-// replace gitee.com/yctxkj/xcrypto v0.0.0-00010101000000-000000000000 => ../xcrypto
+replace gitee.com/yctxkj/xcrypto v1.0.0 => ../xcrypto
 
 require (
 	fyne.io/systray v1.10.1-0.20220621085403-9a2652634e93 // indirect

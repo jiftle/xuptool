@@ -101,5 +101,8 @@ func (g *aes_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 		widget.NewButtonWithIcon("reset", theme.DeleteIcon(), func() {
 			g.txtResult.SetText("")
 		}),
+		widget.NewButtonWithIcon("退出", theme.CancelIcon(), func() {
+			app.Quit()
+		}),
 	)
 }

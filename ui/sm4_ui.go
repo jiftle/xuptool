@@ -6,28 +6,45 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"gitee.com/yctxkj/xcrypto/xgm"
 )
 
 type sm4_gui struct {
+	lblMode         *widget.Label // 模式， ECB, CBC
+	rdoGroupMode    *widget.RadioGroup
+	lblPadding      *widget.Label
+	rdoGroupPadding *widget.RadioGroup // 补齐规则
+
 	lblPlain  *widget.Label
 	txtPlain  *widget.Entry
 	txtKey    *widget.Entry
 	txtResult *widget.Entry
+	lblIv     *widget.Label
+	txtIv     *widget.Entry
+
+	mode    string // 算法模式 ECB CBC
+	padding string // 补齐规则
 }
 
-func NewGUI_SM4() *sm4_gui {
+func NewGUI_sm4_gui() *sm4_gui {
 	return &sm4_gui{}
 }
 
 func (g *sm4_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 	g.lblPlain = widget.NewLabel("明文")
 	g.txtResult = &widget.Entry{Text: "", PlaceHolder: "this is result ! "}
-	g.txtPlain = &widget.Entry{Text: "11223344556677881122334455667788", PlaceHolder: "please intput plain ..."}
-	g.txtKey = &widget.Entry{Text: "11223344556677881122334455667788", PlaceHolder: "please input key ..."}
+	g.txtPlain = &widget.Entry{Text: "00000000000000000A01020304050680", PlaceHolder: "please intput plain ..."}
+	g.txtKey = &widget.Entry{Text: "60EB9BF035B849CC2EE26BBEC22C20B1", PlaceHolder: "please input key ..."}
+	g.lblIv = widget.NewLabel("向量")
+	g.txtIv = &widget.Entry{Text: "00000000000000000000000000000000"}
+	g.lblMode = widget.NewLabel("模式")
+	g.rdoGroupMode = widget.NewRadioGroup([]string{"ECB", "CBC"}, func(s string) {
+		g.mode = s
+	})
+	g.rdoGroupMode.SetSelected("ECB")
+	g.rdoGroupMode.Horizontal = true
 
 	g.txtPlain.OnChanged = func(s string) {
 		g.lblPlain.SetText(fmt.Sprintf("plain[%v]", len(s)))
@@ -46,62 +63,60 @@ func (g *sm4_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 		return nil
 	}
 
-	return container.NewVBox(
+	cobj := container.NewVBox(
+		g.lblMode, g.rdoGroupMode,
 		g.lblPlain,
 		g.txtPlain,
 		widget.NewLabel("密钥"),
 		g.txtKey,
+		g.lblIv, g.txtIv,
 		widget.NewLabel("密文"),
 		g.txtResult,
 		widget.NewButtonWithIcon("encrypt", theme.ConfirmIcon(), func() {
-			// 加密
 			g.txtResult.SetText("")
 			g.txtResult.Refresh()
 			sPlain := g.txtPlain.Text
-			bytPlain, err := hex.DecodeString(sPlain)
+			sKey := g.txtKey.Text
+			sIv := g.txtIv.Text
+			sCipher := ""
+			var err error
+			if g.mode == "ECB" {
+				sCipher, err = xgm.Encrypt_ECB(sPlain, sKey)
+			} else {
+				sCipher, err = xgm.Encrypt_CBC(sPlain, sKey, sIv)
+			}
 			if err != nil {
-				dialog.NewError(err, w).Show()
+				g.txtResult.SetText(fmt.Sprintf("%v", err))
 				return
 			}
-			bytKey, err := hex.DecodeString(g.txtKey.Text)
-			if err != nil {
-				dialog.NewError(err, w).Show()
-				return
-			}
-			bytCipher, err := xgm.EncryptECB(bytPlain, bytKey)
-			if err != nil {
-				dialog.NewError(err, w).Show()
-				return
-			}
-			sCipher := hex.EncodeToString(bytCipher)
 			g.txtResult.SetText(sCipher)
 
 		}),
 		widget.NewButtonWithIcon("decrypt", theme.CancelIcon(), func() {
-			// 解密
 			g.txtResult.SetText("")
+			g.txtResult.Refresh()
 			sPlain := g.txtPlain.Text
-			//dialog.NewInformation("tip", fmt.Sprintf("plain: %v", sPlain), w).Show()
-			bytPlain, err := hex.DecodeString(sPlain)
+			sKey := g.txtKey.Text
+			sIv := g.txtIv.Text
+			sCipher := ""
+			var err error
+			if g.mode == "ECB" {
+				sCipher, err = xgm.Decrypt_ECB(sPlain, sKey)
+			} else {
+				sCipher, err = xgm.Decrypt_CBC(sPlain, sKey, sIv)
+			}
 			if err != nil {
-				dialog.NewError(err, w).Show()
+				g.txtResult.SetText(fmt.Sprintf("%v", err))
 				return
 			}
-			bytKey, err := hex.DecodeString(g.txtKey.Text)
-			if err != nil {
-				dialog.NewError(err, w).Show()
-				return
-			}
-			bytCipher, err := xgm.DecryptECB(bytPlain, bytKey)
-			if err != nil {
-				dialog.NewError(err, w).Show()
-				return
-			}
-			sCipher := hex.EncodeToString(bytCipher)
 			g.txtResult.SetText(sCipher)
 		}),
 		widget.NewButtonWithIcon("reset", theme.DeleteIcon(), func() {
 			g.txtResult.SetText("")
 		}),
+		widget.NewButtonWithIcon("退出", theme.CancelIcon(), func() {
+			app.Quit()
+		}),
 	)
+	return cobj
 }

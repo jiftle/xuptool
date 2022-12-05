@@ -4,6 +4,7 @@ import (
 	"crypto/cipher"
 	"crypto/des"
 	"encoding/hex"
+	"errors"
 )
 
 func DES_CBC_Encrypt(key, plain string) (cipher string, err error) {
@@ -95,4 +96,85 @@ func TripleDesDecrypt(crypted, key []byte) ([]byte, error) {
 	origData = PKCS5UnPadding(origData)
 	// origData = ZeroUnPadding(origData)
 	return origData, nil
+}
+
+func TripleDES_CBC(key, data, iv []byte, flag int) (out []byte, err error) {
+	nkey := make([]byte, 24)
+	if len(key) == 16 {
+		copy(nkey, key)
+		copy(nkey[16:], key[:8])
+	} else if len(key) == 24 {
+		copy(nkey, key)
+	}
+	block, err := des.NewTripleDESCipher(nkey)
+	if err != nil {
+		return
+	}
+	var blockMode cipher.BlockMode
+	if flag == 0 {
+		blockMode = cipher.NewCBCEncrypter(block, iv)
+	} else {
+		blockMode = cipher.NewCBCDecrypter(block, iv)
+	}
+	out = make([]byte, len(data))
+	blockMode.CryptBlocks(out, data)
+	return
+}
+
+func TripleDES_CBC_Encrypt(key, plain, iv string) (cipher string, err error) {
+	bytKey, err := hex.DecodeString(key)
+	if err != nil {
+		return
+	}
+	bytPlain, err := hex.DecodeString(plain)
+	if err != nil {
+		return
+	}
+	bytIv, err := hex.DecodeString(iv)
+	if err != nil {
+		return
+	}
+	if len(key) != 32 {
+		err = errors.New("key length must be 16")
+		return
+	}
+	if len(iv) != 16 {
+		err = errors.New("iv length must be 8")
+		return
+	}
+	bytCipher, err := TripleDES_CBC(bytKey, bytPlain, bytIv, 1)
+	if err != nil {
+		return
+	}
+	cipher = hex.EncodeToString(bytCipher)
+	return
+}
+
+func TripleDES_CBC_Decrypt(key, plain, iv string) (cipher string, err error) {
+	bytKey, err := hex.DecodeString(key)
+	if err != nil {
+		return
+	}
+	bytPlain, err := hex.DecodeString(plain)
+	if err != nil {
+		return
+	}
+	bytIv, err := hex.DecodeString(iv)
+	if err != nil {
+		return
+	}
+	if len(key) != 32 {
+		err = errors.New("key length must be 16")
+		return
+	}
+	if len(iv) != 16 {
+		err = errors.New("iv length must be 8")
+		return
+	}
+	bytCipher, err := TripleDES_CBC(bytKey, bytPlain, bytIv, 0)
+	if err != nil {
+		return
+	}
+	cipher = hex.EncodeToString(bytCipher)
+	return
 }

@@ -33,8 +33,8 @@ func New_tripledes_gui() XuptoolUI {
 func (g *tripledes_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 	g.lblPlain = widget.NewLabel("明文")
 	g.txtResult = &widget.Entry{Text: "", PlaceHolder: "this is result ! "}
-	g.txtPlain = &widget.Entry{Text: "1111111111111111", PlaceHolder: "please intput plain ..."}
-	g.txtKey = &widget.Entry{Text: "1111111111111111", PlaceHolder: "please input key ..."}
+	g.txtPlain = &widget.Entry{Text: "11111111111111111111111111111111", PlaceHolder: "please intput plain ..."}
+	g.txtKey = &widget.Entry{Text: "11111111111111111111111111111111", PlaceHolder: "please input key ..."}
 	g.rdoGroup = widget.NewRadioGroup([]string{"ECB", "CBC"}, func(s string) {
 		g.mode = s
 	})
@@ -81,9 +81,9 @@ func (g *tripledes_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 			sCipher := ""
 			var err error
 			if g.mode == "ECB" {
-				sCipher, err = algorithm.DES_ECB_Encrypt(sKey, sPlain)
+				sCipher, err = algorithm.TripleDES_ECB_Encrypt(sKey, sPlain)
 			} else {
-				sCipher, err = algorithm.DES_CBC_Encrypt(sKey, sPlain)
+				sCipher, err = algorithm.TripleDES_CBC_Encrypt(sKey, sPlain, "0000000000000000")
 			}
 			if err != nil {
 				g.txtResult.SetText(fmt.Sprintf("%v", err))
@@ -97,9 +97,9 @@ func (g *tripledes_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 			sCipher := ""
 			var err error
 			if g.mode == "ECB" {
-				sCipher, err = algorithm.DES_ECB_Decrypt(sKey, sPlain)
+				sCipher, err = algorithm.TripleDES_ECB_Decrypt(sKey, sPlain)
 			} else {
-				sCipher, err = algorithm.DES_CBC_Decrypt(sKey, sPlain)
+				sCipher, err = algorithm.TripleDES_CBC_Decrypt(sKey, sPlain, "0000000000000000")
 			}
 			if err != nil {
 				g.txtResult.SetText(fmt.Sprintf("%v", err))

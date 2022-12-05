@@ -23,6 +23,11 @@ func DES_ECB_Decrypt(key, plain string) (cipher string, err error) {
 	if err != nil {
 		return
 	}
+	// 检查密钥长度是否合规
+	if len(key) != 16 {
+		err = errors.New("key length must be 8")
+		return
+	}
 	bytCipher, err := DESECB(bytKey, bytPlain, 0)
 	if err != nil {
 		return
@@ -38,6 +43,11 @@ func DES_ECB_Encrypt(key, plain string) (cipher string, err error) {
 	}
 	bytPlain, err := hex.DecodeString(plain)
 	if err != nil {
+		return
+	}
+	// 检查密钥长度是否合规
+	if len(key) != 16 {
+		err = errors.New("key length must be 8")
 		return
 	}
 	bytCipher, err := DESECB(bytKey, bytPlain, 1)
@@ -57,6 +67,11 @@ func TripleDES_ECB_Decrypt(key, plain string) (cipher string, err error) {
 	if err != nil {
 		return
 	}
+	// 检查密钥长度是否合规
+	if len(key) != 32 {
+		err = errors.New("key length must be 16")
+		return
+	}
 	bytCipher, err := TripleDESECB(bytKey, bytPlain, 0)
 	if err != nil {
 		return
@@ -72,6 +87,11 @@ func TripleDES_ECB_Encrypt(key, plain string) (cipher string, err error) {
 	}
 	bytPlain, err := hex.DecodeString(plain)
 	if err != nil {
+		return
+	}
+	// 检查密钥长度是否合规
+	if len(key) != 32 {
+		err = errors.New("key length must be 16")
 		return
 	}
 	bytCipher, err := TripleDESECB(bytKey, bytPlain, 1)
