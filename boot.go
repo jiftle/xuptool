@@ -24,18 +24,8 @@ func init() {
 }
 
 func setFont_macos() {
-	// linux 指定支持中文的字体
 	os.Setenv("FYNE_THEME", "light")
-	fontPaths := findfont.List()
-	for _, path := range fontPaths {
-		// defaultFont := "MesloLGS NF Bold Italic.ttf"
-		// if strings.Contains(path, defaultFont) {
-		if strings.Contains(path, "MesloLGS") {
-			os.Setenv("FYNE_FONT", path)
-			break
-		}
-	}
-	// os.Setenv("FYNE_FONT", "/usr/share/fonts/truetype/droid/DroidSansFallbackFull.ttf")
+	os.Setenv("FYNE_FONT", "/System/Library/Fonts/Supplemental/Songti.ttc")
 }
 
 func setFont_linux() {
@@ -53,7 +43,6 @@ func setFont_linux() {
 	// 		// break
 	// 	}
 	// }
-
 }
 
 func setFont_Win() {

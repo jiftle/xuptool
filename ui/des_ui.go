@@ -53,6 +53,7 @@ func (g *des_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 	g.rdoGroup = widget.NewRadioGroup([]string{"ECB", "CBC"}, func(s string) {
 		g.mode = s
 	})
+	g.rdoGroup.Horizontal = true
 	cobj := container.NewVBox(
 		widget.NewLabel("算法模式"),
 		g.rdoGroup,

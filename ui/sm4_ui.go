@@ -47,7 +47,7 @@ func (g *sm4_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 	g.rdoGroupMode.Horizontal = true
 
 	g.txtPlain.OnChanged = func(s string) {
-		g.lblPlain.SetText(fmt.Sprintf("plain[%v]", len(s)))
+		g.lblPlain.SetText(fmt.Sprintf("明文[%v]", len(s)))
 	}
 	g.txtPlain.Validator = func(s string) error {
 		if len(s) == 0 {
@@ -72,7 +72,7 @@ func (g *sm4_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 		g.lblIv, g.txtIv,
 		widget.NewLabel("密文"),
 		g.txtResult,
-		widget.NewButtonWithIcon("encrypt", theme.ConfirmIcon(), func() {
+		widget.NewButtonWithIcon("加密", theme.ConfirmIcon(), func() {
 			g.txtResult.SetText("")
 			g.txtResult.Refresh()
 			sPlain := g.txtPlain.Text
@@ -92,7 +92,7 @@ func (g *sm4_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 			g.txtResult.SetText(sCipher)
 
 		}),
-		widget.NewButtonWithIcon("decrypt", theme.CancelIcon(), func() {
+		widget.NewButtonWithIcon("解密", theme.CancelIcon(), func() {
 			g.txtResult.SetText("")
 			g.txtResult.Refresh()
 			sPlain := g.txtPlain.Text
@@ -111,7 +111,7 @@ func (g *sm4_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 			}
 			g.txtResult.SetText(sCipher)
 		}),
-		widget.NewButtonWithIcon("reset", theme.DeleteIcon(), func() {
+		widget.NewButtonWithIcon("清空", theme.DeleteIcon(), func() {
 			g.txtResult.SetText("")
 		}),
 		widget.NewButtonWithIcon("退出", theme.CancelIcon(), func() {

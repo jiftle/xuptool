@@ -24,13 +24,13 @@ func NewGUI_AES() *aes_gui {
 }
 
 func (g *aes_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
-	g.lblPlain = widget.NewLabel("plain")
+	g.lblPlain = widget.NewLabel("明文")
 	g.txtResult = &widget.Entry{Text: "", PlaceHolder: "this is result ! "}
 	g.txtPlain = &widget.Entry{Text: "11223344556677881122334455667788", PlaceHolder: "please intput plain ..."}
 	g.txtKey = &widget.Entry{Text: "11223344556677881122334455667788", PlaceHolder: "please input key ..."}
 
 	g.txtPlain.OnChanged = func(s string) {
-		g.lblPlain.SetText(fmt.Sprintf("plain[%v]", len(s)))
+		g.lblPlain.SetText(fmt.Sprintf("明文[%v]", len(s)))
 	}
 	g.txtPlain.Validator = func(s string) error {
 		_, err := hex.DecodeString(s)
@@ -48,57 +48,37 @@ func (g *aes_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 	return container.NewVBox(
 		g.lblPlain,
 		g.txtPlain,
-		widget.NewLabel("key"),
+		widget.NewLabel("密钥"),
 		g.txtKey,
-		widget.NewLabel("cipher"),
+		widget.NewLabel("密文"),
 		g.txtResult,
-		widget.NewButtonWithIcon("encrypt", theme.ConfirmIcon(), func() {
+		widget.NewButtonWithIcon("加密", theme.ConfirmIcon(), func() {
 			// 加密
 			g.txtResult.SetText("")
 			g.txtResult.Refresh()
 			sPlain := g.txtPlain.Text
-			bytPlain, err := hex.DecodeString(sPlain)
+			sKey := g.txtKey.Text
+			sOut, err := xaes.AES_Encrypt_ECB(sPlain, sKey)
 			if err != nil {
 				dialog.NewError(err, w).Show()
 				return
 			}
-			bytKey, err := hex.DecodeString(g.txtKey.Text)
-			if err != nil {
-				dialog.NewError(err, w).Show()
-				return
-			}
-			bytCipher, err := xaes.Encrypt_ECB(bytPlain, bytKey)
-			if err != nil {
-				dialog.NewError(err, w).Show()
-				return
-			}
-			sCipher := hex.EncodeToString(bytCipher)
-			g.txtResult.SetText(sCipher)
+			g.txtResult.SetText(sOut)
 
 		}),
-		widget.NewButtonWithIcon("decrypt", theme.CancelIcon(), func() {
+		widget.NewButtonWithIcon("解密", theme.CancelIcon(), func() {
 			// 解密
 			g.txtResult.SetText("")
 			sPlain := g.txtPlain.Text
-			bytPlain, err := hex.DecodeString(sPlain)
+			sKey := g.txtKey.Text
+			sOut, err := xaes.AES_Decrypt_ECB(sPlain, sKey)
 			if err != nil {
 				dialog.NewError(err, w).Show()
 				return
 			}
-			bytKey, err := hex.DecodeString(g.txtKey.Text)
-			if err != nil {
-				dialog.NewError(err, w).Show()
-				return
-			}
-			bytCipher, err := xaes.Decrypt_ECB(bytPlain, bytKey)
-			if err != nil {
-				dialog.NewError(err, w).Show()
-				return
-			}
-			sCipher := hex.EncodeToString(bytCipher)
-			g.txtResult.SetText(sCipher)
+			g.txtResult.SetText(sOut)
 		}),
-		widget.NewButtonWithIcon("reset", theme.DeleteIcon(), func() {
+		widget.NewButtonWithIcon("清空", theme.DeleteIcon(), func() {
 			g.txtResult.SetText("")
 		}),
 		widget.NewButtonWithIcon("退出", theme.CancelIcon(), func() {

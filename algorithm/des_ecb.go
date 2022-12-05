@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -33,6 +34,7 @@ func DES_ECB_Decrypt(key, plain string) (cipher string, err error) {
 		return
 	}
 	cipher = hex.EncodeToString(bytCipher)
+	cipher = strings.ToUpper(cipher)
 	return
 }
 
@@ -55,6 +57,7 @@ func DES_ECB_Encrypt(key, plain string) (cipher string, err error) {
 		return
 	}
 	cipher = hex.EncodeToString(bytCipher)
+	cipher = strings.ToUpper(cipher)
 	return
 }
 
@@ -77,6 +80,7 @@ func TripleDES_ECB_Decrypt(key, plain string) (cipher string, err error) {
 		return
 	}
 	cipher = hex.EncodeToString(bytCipher)
+	cipher = strings.ToUpper(cipher)
 	return
 }
 
@@ -99,6 +103,7 @@ func TripleDES_ECB_Encrypt(key, plain string) (cipher string, err error) {
 		return
 	}
 	cipher = hex.EncodeToString(bytCipher)
+	cipher = strings.ToUpper(cipher)
 	return
 }
 

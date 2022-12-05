@@ -36,7 +36,7 @@ func (g *gm_mac_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 	g.txtResult = &widget.Entry{Text: "", PlaceHolder: "this is result ! "}
 
 	g.txtPlain.OnChanged = func(s string) {
-		g.lblPlain.SetText(fmt.Sprintf("plain[%v]", len(s)))
+		g.lblPlain.SetText(fmt.Sprintf("MAC数据[%v]", len(s)))
 	}
 
 	cobj := container.NewVBox(

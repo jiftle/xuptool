@@ -21,6 +21,8 @@ type tripledes_gui struct {
 	txtPlain        *widget.Entry
 	txtKey          *widget.Entry
 	txtResult       *widget.Entry
+	lblIv           *widget.Label
+	txtIv           *widget.Entry
 
 	mode    string // 算法模式 ECB CBC
 	padding string // 补齐规则
@@ -35,15 +37,19 @@ func (g *tripledes_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 	g.txtResult = &widget.Entry{Text: "", PlaceHolder: "this is result ! "}
 	g.txtPlain = &widget.Entry{Text: "11111111111111111111111111111111", PlaceHolder: "please intput plain ..."}
 	g.txtKey = &widget.Entry{Text: "11111111111111111111111111111111", PlaceHolder: "please input key ..."}
+	g.lblIv = widget.NewLabel("向量")
+	g.txtIv = &widget.Entry{Text: "0000000000000000"}
+
 	g.rdoGroup = widget.NewRadioGroup([]string{"ECB", "CBC"}, func(s string) {
 		g.mode = s
 	})
 	g.rdoGroup.Horizontal = true
 	g.lblPadding = widget.NewLabel("补齐规则")
-	g.rdoGroupPadding = widget.NewRadioGroup([]string{"PBOC", "PKCS5"}, func(s string) {
+	g.rdoGroupPadding = widget.NewRadioGroup([]string{"None", "PBOC", "PKCS5"}, func(s string) {
 		g.padding = s
 	})
 	g.rdoGroupPadding.Horizontal = true
+	g.rdoGroupPadding.SetSelected("None")
 
 	g.txtPlain.OnChanged = func(s string) {
 		g.lblPlain.SetText(fmt.Sprintf("明文[%v]", len(s)))
@@ -78,12 +84,13 @@ func (g *tripledes_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 			g.txtResult.Refresh()
 			sPlain := g.txtPlain.Text
 			sKey := g.txtKey.Text
+			sIv := g.txtIv.Text
 			sCipher := ""
 			var err error
 			if g.mode == "ECB" {
 				sCipher, err = algorithm.TripleDES_ECB_Encrypt(sKey, sPlain)
 			} else {
-				sCipher, err = algorithm.TripleDES_CBC_Encrypt(sKey, sPlain, "0000000000000000")
+				sCipher, err = algorithm.TripleDES_CBC_Encrypt(sKey, sPlain, sIv)
 			}
 			if err != nil {
 				g.txtResult.SetText(fmt.Sprintf("%v", err))
@@ -94,12 +101,13 @@ func (g *tripledes_gui) MakeUI(app fyne.App, w fyne.Window) fyne.CanvasObject {
 		widget.NewButtonWithIcon("解密", theme.CancelIcon(), func() {
 			sPlain := g.txtPlain.Text
 			sKey := g.txtKey.Text
+			sIv := g.txtIv.Text
 			sCipher := ""
 			var err error
 			if g.mode == "ECB" {
 				sCipher, err = algorithm.TripleDES_ECB_Decrypt(sKey, sPlain)
 			} else {
-				sCipher, err = algorithm.TripleDES_CBC_Decrypt(sKey, sPlain, "0000000000000000")
+				sCipher, err = algorithm.TripleDES_CBC_Decrypt(sKey, sPlain, sIv)
 			}
 			if err != nil {
 				g.txtResult.SetText(fmt.Sprintf("%v", err))
