@@ -1,3 +1,4 @@
+//go:generate fyne bundle -o data.go Icon.png
 package main
 
 import (
@@ -6,5 +7,6 @@ import (
 
 func main() {
 	a := app.New()
+	a.SetIcon(resourceIconPng)
 	MainUI(a)
 }
